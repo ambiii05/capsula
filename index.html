@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santuario del Guardián</title>
+    <style>
+        /* Estilo Dark Fantasy */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0c;
+            background-image: radial-gradient(circle, #1a1a2e 0%, #050505 100%);
+            color: #d4af37; /* Color dorado viejo */
+            font-family: 'Cinzel', serif; /* Fuente estilo medieval si se carga */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5), 2px 2px 5px #000;
+            margin-bottom: 20px;
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        /* Contenedor del Cofre */
+        .chest-container {
+            position: relative;
+            z-index: 5;
+        }
+
+        #cofre {
+            width: 300px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.8));
+        }
+
+        #cofre:hover {
+            transform: scale(1.05);
+        }
+
+        /* El Guardián que sigue al ratón */
+        #guardian {
+            position: fixed;
+            width: 120px;
+            pointer-events: none; /* Para que no interfiera con el click del cofre */
+            z-index: 100;
+            transition: transform 0.1s ease-out;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.3));
+        }
+
+        /* Efecto de Brillos */
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: gold;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: fly 2s linear forwards;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(0); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>¡Acceso Concedido! Ambi</h1>
+
+    <div class="chest-container">
+        <img src="cofre.gif" id="cofre" alt="Cofre Cerrado">
+    </div>
+
+    <img src="guardian.png" id="guardian" alt="Guardián">
+
+    <script>
+        const cofre = document.getElementById('cofre');
+        const guardian = document.getElementById('guardian');
+
+        // Lógica del Guardián siguiendo al ratón
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            // El guardián se posiciona cerca del cursor
+            guardian.style.left = (x - 60) + 'px';
+            guardian.style.top = (y - 60) + 'px';
+        });
+
+        // Lógica al hacer click en el tesoro
+        cofre.addEventListener('click', () => {
+            // Cambiar imagen a tesoro.gif
+            cofre.src = 'tesoro.gif';
+            
+            // Generar brillitos
+            for (let i = 0; i < 50; i++) {
+                createSparkle();
+            }
+        });
+
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.classList.add('sparkle');
+            
+            // Posición inicial (centro del cofre)
+            const rect = cofre.getBoundingClientRect();
+            sparkle.style.left = (rect.left + rect.width / 2) + 'px';
+            sparkle.style.top = (rect.top + rect.height / 2) + 'px';
+
+            // Dirección aleatoria
+            const moveX = (Math.random() - 0.5) * 400;
+            const moveY = (Math.random() - 0.5) * 400;
+            sparkle.style.setProperty('--x', `${moveX}px`);
+            sparkle.style.setProperty('--y', `${moveY}px`);
+
+            document.body.appendChild(sparkle);
+
+            // Borrar el elemento después de la animación
+            setTimeout(() => {
+                sparkle.remove();
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
